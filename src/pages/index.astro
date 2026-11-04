@@ -1,0 +1,119 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Preguntas from '../components/Preguntas.astro';
+import Cielo from '../components/Cielo.astro';
+import { getAlojamientos, getEstaciones, getExperiencias, getOpiniones, getEntradas } from '../lib/contenido';
+import { sitio } from '../lib/sitio';
+import { euros } from '../lib/util';
+import portada from '../assets/fotos/mas-aubaga.jpg';
+
+const alojamientos = await getAlojamientos();
+const estaciones = await getEstaciones();
+const experiencias = (await getExperiencias()).slice(0, 3);
+const opiniones = await getOpiniones();
+const entradas = (await getEntradas()).slice(0, 3);
+const jsonld = {
+  '@context': 'https://schema.org',
+  '@type': 'LodgingBusiness',
+  name: sitio.nombre,
+  description: sitio.descripcion,
+  telephone: sitio.telefono,
+  email: sitio.email,
+  address: { '@type': 'PostalAddress', streetAddress: sitio.direccion.calle, postalCode: sitio.direccion.cp, addressLocality: sitio.direccion.ciudad, addressCountry: 'ES' },
+};
+---
+
+<Base titulo="Casas rurales entre viñas y bosque" jsonld={jsonld}>
+  <section class="portada">
+    <div class="portada__foto"><Image src={portada} alt="Casa de piedra con un árbol grande delante y montañas detrás" widths={[800, 1400, 2000]} sizes="100vw" loading="eager" style="width:100%;height:100%" /></div>
+    <p class="portada__credito" aria-hidden="true">La Era, a las siete de la tarde</p>
+    <div class="contenedor portada__cuerpo">
+      <h1>Un lugar para <em>no hacer nada</em></h1>
+      <p>Tres casas de piedra y madera en una masía del Priorat. Viñas, bosque y un cielo con estrellas.</p>
+      <div class="portada__pie">
+        <a class="btn" href="/reservar/">Mira las noches libres</a>
+        <a class="btn btn--linea" href="/alojamientos/">Conoce las casas</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="seccion seccion--noche">
+    <div class="contenedor"><Cielo /></div>
+  </section>
+
+  <section class="seccion">
+    <div class="contenedor">
+      <div class="cabecera-seccion"><h2>Tres casas</h2><p>Cada una tiene su carácter. Ninguna tiene televisión en el dormitorio.</p></div>
+      <div class="alojamientos">
+        {alojamientos.map((a) => (
+          <article class="alojamiento">
+            <figure class="foto"><Image src={a.data.foto} alt={a.data.fotoAlt} widths={[500, 800, 1200]} sizes="(min-width: 900px) 55vw, 100vw" /></figure>
+            <div>
+              <p class="tipo">{a.data.tipo}</p>
+              <h3>{a.data.nombre}</h3>
+              <p>{a.data.resumen}</p>
+              <ul class="datos-lista"><li><b>{a.data.personas}</b>personas</li><li><b>{a.data.habitaciones}</b>{a.data.habitaciones === 1 ? 'habitación' : 'habitaciones'}</li><li><b>{a.data.metros}</b>m²</li></ul>
+              <p class="precio-noche num"><small>desde </small>{euros(a.data.precioNoche)} <small>la noche</small></p>
+              <p style="display:flex;gap:12px;flex-wrap:wrap"><a class="btn btn--peq" href={`/reservar/?alojamiento=${a.id}`}>Ver noches libres</a><a class="btn btn--peq btn--linea" href={`/alojamientos/${a.id}/`}>Conocerla</a></p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="seccion seccion--blanca">
+    <div class="contenedor">
+      <div class="cabecera-seccion"><h2>Cuatro estaciones</h2><a class="btn btn--peq btn--linea" href="/estaciones/">Cómo es cada una</a></div>
+      <div class="editorial">
+        <p style="font:italic 400 clamp(1.6rem,3vw,2.4rem)/1.15 var(--f-titulo);max-width:22ch">El mas no se parece a sí mismo en dos meses seguidos.</p>
+        <ul class="lista" style="margin:0">
+          {estaciones.map((e) => <li><strong>{e.data.nombre}</strong> ({e.data.meses.toLowerCase()}): {e.data.frase}</li>)}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="seccion">
+    <div class="contenedor">
+      <div class="cabecera-seccion"><h2>Para hacer, si apetece</h2><a class="btn btn--peq btn--linea" href="/experiencias/">Todas las experiencias</a></div>
+      <div class="lista-exp">
+        {experiencias.map((e) => (
+          <article class="exp">
+            <div><h3>{e.data.nombre}</h3><p class="meta" style="margin:6px 0 0">{e.data.duracion} · {e.data.precio}</p></div>
+            <p>{e.data.texto}</p>
+            <p class="meta"><b>Cuándo:</b> {e.data.cuando}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="seccion seccion--liquen">
+    <div class="contenedor">
+      <div class="cabecera-seccion" style="border-color:#101710"><h2>Lo que cuentan</h2></div>
+      <div class="opiniones">
+        {opiniones.map((o) => <figure class="opinion"><blockquote>«{o.data.texto}»</blockquote><figcaption><strong>{o.data.nombre}</strong> · {o.data.alojamiento} · {o.data.cuando}</figcaption></figure>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="seccion">
+    <div class="contenedor">
+      <div class="cabecera-seccion"><h2>Diario del mas</h2><a class="btn btn--peq btn--linea" href="/diario/">Leer más</a></div>
+      <div class="entradas">
+        {entradas.map((e) => (
+          <article class="entrada">
+            <Image src={e.data.foto} alt={e.data.fotoAlt} widths={[400, 700]} sizes="(min-width: 960px) 30vw, 100vw" />
+            <p class="entrada__meta">{e.data.categoria} · {e.data.minutos} min</p>
+            <h3><a href={`/diario/${e.id}/`}>{e.data.titulo}</a></h3>
+            <p>{e.data.resumen}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="seccion seccion--blanca"><div class="contenedor"><Preguntas titulo="Antes de venir" /></div></section>
+</Base>

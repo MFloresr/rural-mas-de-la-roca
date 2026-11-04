@@ -1,0 +1,5 @@
+[
+  { "id": "o1", "texto": "Tres días sin cobertura y ni una queja. La noche de estrellas fue lo mejor del viaje.", "nombre": "Marta y Pau", "cuando": "Agosto", "alojamiento": "La Cabaña" },
+  { "id": "o2", "texto": "Fuimos doce de la familia y cupimos todos en la mesa. La cocina de leña es una maravilla.", "nombre": "Família Ferrer", "cuando": "Noviembre", "alojamiento": "La Era" },
+  { "id": "o3", "texto": "El silencio es real. Desayunamos en la terraza con el pan del pueblo y no queríamos volver.", "nombre": "Alba", "cuando": "Abril", "alojamiento": "El Pajar" }
+]

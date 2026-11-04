@@ -1,0 +1,48 @@
+---
+import { menu, sitio } from '../lib/sitio';
+const { direccion: d } = sitio;
+---
+
+<footer class="pie">
+  <div class="pie__aviso">Web de demostración: los alojamientos, los precios y las opiniones son de ejemplo. Las reservas no se hacen de verdad.</div>
+  <div class="contenedor pie__contenido">
+    <div class="pie__rejilla">
+      <div>
+        <a class="logo" href="/" translate="no">Mas de la Roca<small>Casas rurales · Priorat</small><span class="solo-lectores">, ir al inicio</span></a>
+        <p style="margin-top:14px;max-width:32ch">{sitio.eslogan}.</p>
+        <p>{d.calle}<br />{d.cp} {d.ciudad} ({d.provincia})</p>
+      </div>
+      <div>
+        <h2>Contacto</h2>
+        <ul>
+          <li><a href={`tel:${sitio.telefono}`}>{sitio.telefonoVisible}</a></li>
+          <li><a href={`mailto:${sitio.email}`}>{sitio.email}</a></li>
+          <li><a href={`https://wa.me/${sitio.whatsapp}`}>WhatsApp</a></li>
+          <li><a href="/contacto/">Cómo llegar</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Estancia</h2>
+        <ul>
+          <li>Entrada: {sitio.entrada}</li>
+          <li>Salida: {sitio.salida}</li>
+          <li>Cancelación gratis hasta {sitio.cancelacionDias} días antes</li>
+        </ul>
+      </div>
+      <div>
+        <h2>Navegar</h2>
+        <ul>
+          <li><a href="/reservar/">Reservar</a></li>
+          {menu.filter((m) => m.href !== '/reservar/').map((m) => <li><a href={m.href}>{m.texto}</a></li>)}
+          <li><a href="/contacto/">Contacto</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="pie__bajo">
+      <span>© {new Date().getFullYear()} {sitio.nombre}</span>
+      <span>
+        <a href="/aviso-legal/">Aviso legal</a> · <a href="/condiciones-de-reserva/">Condiciones de reserva</a> · <a href="/privacidad/">Privacidad</a> · <a href="/cookies/">Cookies</a> · <a href="/creditos/">Créditos</a>
+      </span>
+    </div>
+  </div>
+</footer>

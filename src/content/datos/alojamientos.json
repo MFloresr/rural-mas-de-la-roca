@@ -1,0 +1,23 @@
+[
+  {
+    "id": "la-era", "nombre": "La Era", "tipo": "Casa de piedra", "personas": 8, "habitaciones": 4, "banos": 3, "metros": 210, "precioNoche": 210,
+    "resumen": "La casa grande del mas: cuatro habitaciones, cocina de leña y una mesa de doce.",
+    "descripcion": ["La casa original del mas, de piedra y vigas de madera, con paredes de sesenta centímetros que mantienen el frescor en verano y el calor en invierno.", "La cocina tiene una chimenea baja y una mesa larga hecha con una sola tabla. Desde las ventanas del salón se ven las viñas y, al fondo, la sierra.", "Las cuatro habitaciones dan al sur o al este, para que el sol de la mañana entre sin pedir permiso."],
+    "incluye": ["Chimenea y cocina de leña", "Cuatro habitaciones y tres baños", "Cocina completa con horno", "Terraza con mesa para doce", "Ropa de cama y toallas"],
+    "foto": "../../assets/fotos/mas-aubaga.jpg", "fotoAlt": "Casa de piedra con tejado de teja y un árbol grande delante, con montañas detrás", "orden": 1
+  },
+  {
+    "id": "el-pajar", "nombre": "El Pajar", "tipo": "Apartamento", "personas": 4, "habitaciones": 2, "banos": 1, "metros": 85, "precioNoche": 120,
+    "resumen": "El antiguo pajar, convertido en un apartamento luminoso con vistas al valle.",
+    "descripcion": ["Donde antes se guardaba la paja, hoy hay un apartamento de dos habitaciones con techos altos y vigas vistas.", "El salón abre a una terraza orientada al valle: el mejor sitio del mas para tomar un vermut al atardecer."],
+    "incluye": ["Dos habitaciones y un baño", "Cocina equipada", "Terraza con vistas al valle", "Estufa de pellets", "Ropa de cama y toallas"],
+    "foto": "../../assets/fotos/mas-morellana.jpg", "fotoAlt": "Masía de piedra en la ladera de una montaña, junto a un camino", "orden": 2
+  },
+  {
+    "id": "la-cabana", "nombre": "La Cabaña", "tipo": "Cabaña de madera", "personas": 2, "habitaciones": 1, "banos": 1, "metros": 32, "precioNoche": 85,
+    "resumen": "Una cabaña de madera para dos, pensada para quedarse mirando el cielo.",
+    "descripcion": ["Revestida de pino y con una ventana grande, la cabaña es un refugio pequeño para dos personas.", "Está algo apartada, lejos de cualquier luz, y por la noche el techo de estrellas empieza justo en la puerta."],
+    "incluye": ["Cama doble y baño privado", "Cocina pequeña", "Calefacción", "Porche privado", "Ropa de cama y toallas"],
+    "foto": "../../assets/fotos/cabana-interior.jpg", "fotoAlt": "Interior de una cabaña de madera con una mesa pequeña, sillas blancas y un dormitorio al fondo", "orden": 3
+  }
+]

@@ -1,0 +1,29 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import { getEstaciones } from '../lib/contenido';
+
+const estaciones = await getEstaciones();
+---
+
+<Base titulo="Cuatro estaciones" descripcion="Cómo es el mas en primavera, verano, otoño e invierno, y qué hacer en cada una.">
+  <div class="contenedor cabecera-pagina">
+    <h1>Cuatro estaciones</h1>
+    <p>No hay una mala época para venir, pero sí una distinta para cada cosa.</p>
+  </div>
+  <div style="margin-top:30px">
+    {estaciones.map((e, i) => (
+      <section class="estacion" aria-labelledby={`e-${e.id}`}>
+        <Image src={e.data.foto} alt={e.data.fotoAlt} widths={[800, 1400, 2000]} sizes="100vw" loading={i === 0 ? 'eager' : 'lazy'} />
+        <div class="contenedor estacion__texto">
+          <p class="meses">{e.data.meses}</p>
+          <h2 id={`e-${e.id}`}>{e.data.nombre}</h2>
+          <p class="frase">{e.data.frase}</p>
+          <p>{e.data.texto}</p>
+          <ul>{e.data.hacer.map((h) => <li>{h}</li>)}</ul>
+        </div>
+      </section>
+    ))}
+  </div>
+  <section class="seccion"><div class="contenedor" style="text-align:left"><h2>¿Cuándo vienes?</h2><p class="texto">En el calendario verás qué noches están libres y cuánto cuesta cada temporada.</p><p><a class="btn" href="/reservar/">Mira las noches libres</a></p></div></section>
+</Base>

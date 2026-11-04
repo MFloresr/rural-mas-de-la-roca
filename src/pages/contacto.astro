@@ -1,0 +1,36 @@
+---
+import Base from '../layouts/Base.astro';
+import Formulario from '../components/Formulario.astro';
+import Preguntas from '../components/Preguntas.astro';
+import { sitio } from '../lib/sitio';
+
+const { direccion: d } = sitio;
+---
+
+<Base titulo="Contacto y cómo llegar" descripcion={`Contacta con ${sitio.nombre}: teléfono, correo, dirección y cómo llegar.`}>
+  <div class="contenedor cabecera-pagina">
+    <h1>Contacto</h1>
+    <p>Para reservar, lo más cómodo es el <a class="enlace" href="/reservar/">calendario</a>. Para todo lo demás, escríbenos o llámanos.</p>
+  </div>
+  <section class="seccion" style="padding-top:30px">
+    <div class="contenedor dos dos--desigual" style="align-items:start">
+      <Formulario tipo="contacto" boton="Enviar el mensaje">
+        <div><label for="m-nombre">Nombre <span class="marca" aria-hidden="true">*</span></label><input id="m-nombre" name="nombre" type="text" autocomplete="name" required /><p class="error" data-error-para="nombre"></p></div>
+        <div><label for="m-email">Correo <span class="marca" aria-hidden="true">*</span></label><input id="m-email" name="email" type="email" autocomplete="email" required /><p class="error" data-error-para="email"></p></div>
+        <div class="ancho-total"><label for="m-msg">Mensaje <span class="marca" aria-hidden="true">*</span></label><textarea id="m-msg" name="mensaje" required></textarea><p class="error" data-error-para="mensaje"></p></div>
+      </Formulario>
+      <aside>
+        <h2 style="font-size:2.4rem">Cómo llegar</h2>
+        <p>{d.calle}<br />{d.cp} {d.ciudad} ({d.provincia})</p>
+        <ul class="lista">
+          <li>Teléfono: <a class="enlace" href={`tel:${sitio.telefono}`}>{sitio.telefonoVisible}</a></li>
+          <li>WhatsApp: <a class="enlace" href={`https://wa.me/${sitio.whatsapp}`}>escríbenos</a></li>
+          <li>Correo: <a class="enlace" href={`mailto:${sitio.email}`}>{sitio.email}</a></li>
+        </ul>
+        <p>Desde Reus, unos 45 minutos en coche. El último tramo, de tres kilómetros, es un camino de tierra bien conservado, pero estrecho. La cobertura desaparece al subir: guarda las indicaciones antes de salir.</p>
+        <p><a class="btn btn--linea" href={sitio.mapa} rel="noopener">Abrir el mapa</a></p>
+        <p class="letra-pequena">El mapa se abre en otra página, así que esta web no carga nada de terceros.</p>
+      </aside>
+    </div>
+  </section>
+</Base>

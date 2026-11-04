@@ -1,0 +1,236 @@
+---
+import Base from '../layouts/Base.astro';
+import Formulario from '../components/Formulario.astro';
+import Preguntas from '../components/Preguntas.astro';
+import { getAlojamientos } from '../lib/contenido';
+import { sitio } from '../lib/sitio';
+import { euros } from '../lib/util';
+
+const alojamientos = await getAlojamientos();
+const datos = {
+  alojamientos: alojamientos.map((a) => ({ id: a.id, nombre: a.data.nombre, personas: a.data.personas, precio: a.data.precioNoche })),
+  limpieza: sitio.limpieza,
+  extras: sitio.extras,
+};
+---
+
+<Base titulo="Reservar: noches libres y precio" descripcion="Elige casa, mira en el calendario qué noches están libres y calcula el precio al momento. Después envía tu solicitud.">
+  <div class="contenedor cabecera-pagina">
+    <h1>Reservar</h1>
+    <p>Elige casa, marca tus noches y mira el precio al momento. Te confirmamos por correo o teléfono en un día laborable.</p>
+  </div>
+
+  <section class="seccion" style="padding-top:20px">
+    <div class="contenedor reservar" id="reservar" data-reservar={JSON.stringify(datos)}>
+      <div>
+        <div class="paso-r">
+          <h2><span>I.</span> La casa</h2>
+          <div class="elige-aloj" role="radiogroup" aria-label="Alojamiento">
+            {alojamientos.map((a, i) => (
+              <label>
+                <input type="radio" name="alojamiento" value={a.id} checked={i === 0} />
+                <span><strong>{a.data.nombre}</strong><small>{a.data.tipo} · hasta {a.data.personas} personas</small></span>
+                <span class="pr num">desde {euros(a.data.precioNoche)}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        <div class="paso-r">
+          <h2 id="h-noches"><span>II.</span> Las noches</h2>
+          <p id="ayuda-noches" role="status" aria-live="polite" style="margin:0 0 12px">Elige el día de entrada.</p>
+          <div class="mes-nav">
+            <button class="btn btn--peq btn--linea" type="button" id="mes-ant">‹ Antes</button>
+            <button class="btn btn--peq btn--linea" type="button" id="mes-sig">Después ›</button>
+          </div>
+          <div class="almanaque" id="almanaque"></div>
+          <div class="leyenda" aria-hidden="true"><span>Temporada baja</span><span class="m">Temporada media (x1,2)</span><span class="a">Temporada alta (x1,5)</span><span class="o">Ocupado</span></div>
+        </div>
+
+        <div class="paso-r">
+          <h2><span>III.</span> Personas y extras</h2>
+          <div class="fila-personas">
+            <div><label for="r-personas">Personas</label><select id="r-personas" name="personas"></select></div>
+          </div>
+          <div class="extras" style="margin-top:16px">
+            <label class="casilla-e"><input type="checkbox" name="lena" /><span>{sitio.extras.lena.nombre}<br /><small class="gris">{sitio.extras.lena.por}</small></span><span class="p num">{euros(sitio.extras.lena.precio)}</span></label>
+            <label class="casilla-e"><input type="checkbox" name="desayuno" /><span>{sitio.extras.desayuno.nombre}<br /><small class="gris">{sitio.extras.desayuno.por}</small></span><span class="p num">{euros(sitio.extras.desayuno.precio)}</span></label>
+            <label class="casilla-e"><input type="checkbox" name="cena" /><span>{sitio.extras.cena.nombre} (una noche)<br /><small class="gris">{sitio.extras.cena.por}</small></span><span class="p num">{euros(sitio.extras.cena.precio)}</span></label>
+            <label class="casilla-e" id="fila-mascota"><input type="checkbox" name="mascota" /><span>{sitio.extras.mascota.nombre}<br /><small class="gris">{sitio.extras.mascota.por} · no se admiten en La Cabaña</small></span><span class="p num">{euros(sitio.extras.mascota.precio)}</span></label>
+          </div>
+        </div>
+
+        <div class="paso-r" id="datos">
+          <h2><span>IV.</span> Tus datos</h2>
+          <Formulario tipo="reserva" boton="Pedir la reserva" mensajeOk="Solicitud recibida. Te confirmamos disponibilidad y te enviamos los datos para el depósito.">
+            <input type="hidden" name="alojamiento" id="h-aloj" /><input type="hidden" name="entrada" id="h-in" /><input type="hidden" name="salida" id="h-out" /><input type="hidden" name="total" id="h-total" />
+            <div><label for="d-nombre">Nombre <span class="marca" aria-hidden="true">*</span></label><input id="d-nombre" name="nombre" type="text" autocomplete="name" required /><p class="error" data-error-para="nombre"></p></div>
+            <div><label for="d-tel">Teléfono <span class="marca" aria-hidden="true">*</span></label><input id="d-tel" name="telefono" type="tel" autocomplete="tel" required pattern="[0-9 +]{9,}" title="Escribe un teléfono de al menos 9 cifras" /><p class="error" data-error-para="telefono"></p></div>
+            <div class="ancho-total"><label for="d-email">Correo <span class="marca" aria-hidden="true">*</span></label><input id="d-email" name="email" type="email" autocomplete="email" required /><p class="error" data-error-para="email"></p></div>
+            <div class="ancho-total"><label for="d-nota">¿Algo que debamos saber? (opcional)</label><textarea id="d-nota" name="nota" maxlength="300" style="min-height:90px"></textarea><p class="ayuda">Hora aproximada de llegada, alergias o una celebración.</p></div>
+          </Formulario>
+          <p class="error" id="error-reserva" role="alert"></p>
+        </div>
+      </div>
+
+      <aside class="cuenta" aria-labelledby="t-cuenta" aria-live="polite">
+        <h2 id="t-cuenta">Tu estancia</h2>
+        <p style="margin:0;color:#c0cbdb" id="c-aloj">–</p>
+        <p class="gran num" id="c-total">0 €</p>
+        <p style="margin:-4px 0 0;color:#c0cbdb" id="c-resumen">Elige las noches para ver el precio.</p>
+        <dl>
+          <div><dt>Noches</dt><dd id="c-noches">–</dd></div>
+          <div><dt>Alojamiento</dt><dd id="c-alq">–</dd></div>
+          <div><dt>Limpieza final</dt><dd id="c-limp">–</dd></div>
+          <div><dt>Extras</dt><dd id="c-ext">–</dd></div>
+          <div><dt>Depósito (30 %)</dt><dd id="c-dep">–</dd></div>
+        </dl>
+        <a class="btn" href="#datos" id="c-ir">Continuar con mis datos</a>
+        <p style="font-size:0.88rem;color:#c0cbdb;margin:12px 0 0">Precios con IVA incluido. Entrada {sitio.entrada}; salida {sitio.salida}.</p>
+      </aside>
+    </div>
+  </section>
+
+  <section class="seccion seccion--blanca"><div class="contenedor"><Preguntas tema="reserva" titulo="Sobre la reserva" /></div></section>
+</Base>
+
+<script>
+  import { temporadaDe, TEMPORADA_FACTOR } from '../lib/util';
+  type Aloj = { id: string; nombre: string; personas: number; precio: number };
+  const raiz = document.getElementById('reservar')!;
+  const D: { alojamientos: Aloj[]; limpieza: Record<string, number>; extras: Record<string, { precio: number }> } = JSON.parse(raiz.dataset.reservar || '{}');
+  const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
+  const almanaque = $('almanaque');
+  const MESES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+  const eur = (n: number) => `${new Intl.NumberFormat('es-ES', { useGrouping: 'always' }).format(Math.round(n))} €`;
+  const aISO = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  const deISO = (s: string) => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
+  const sumaDias = (s: string, n: number) => { const d = deISO(s); d.setDate(d.getDate() + n); return aISO(d); };
+  const hoy = new Date(); const hoyISO = aISO(new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate()));
+
+  const radios = () => [...document.querySelectorAll<HTMLInputElement>('input[name="alojamiento"]')];
+  const alojId = () => radios().find((r) => r.checked)!.value;
+  const aloj = () => D.alojamientos.find((a) => a.id === alojId())!;
+  let entrada = '', salida = '';
+  let mesBase = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+
+  // Ocupación simulada y estable (en la web real saldría del calendario del propietario)
+  const ocupada = (noche: string) => {
+    let h = 17; const t = `${alojId()}|${noche}`;
+    for (let i = 0; i < t.length; i++) h = (h * 31 + t.charCodeAt(i)) % 1009;
+    const finde = [5, 6].includes(deISO(noche).getDay());
+    return h % 100 < (finde ? 38 : 22);
+  };
+  const nochesEntre = (a: string, b: string) => { const r: string[] = []; for (let d = a; d < b; d = sumaDias(d, 1)) r.push(d); return r; };
+  const libreRango = (a: string, b: string) => nochesEntre(a, b).every((n) => !ocupada(n));
+  const minNoches = (a: string, b: string) => (nochesEntre(a, b).some((n) => temporadaDe(deISO(n)) === 'alta') ? 3 : 2);
+
+  function pintarMes(base: Date) {
+    const y = base.getFullYear(), m = base.getMonth();
+    const primero = (new Date(y, m, 1).getDay() + 6) % 7;
+    const dias = new Date(y, m + 1, 0).getDate();
+    let celdas = '';
+    for (let i = 0; i < primero; i++) celdas += '<td></td>';
+    for (let d = 1; d <= dias; d++) {
+      const iso = aISO(new Date(y, m, d));
+      if ((primero + d - 1) % 7 === 0 && d > 1) celdas += '</tr><tr>';
+      const pasado = iso <= hoyISO;
+      const t = temporadaDe(new Date(y, m, d));
+      let deshabilitado = pasado, rango = false, marcado = false;
+      if (entrada && !salida) {
+        if (iso > entrada) deshabilitado = pasado || !libreRango(entrada, iso);
+        else deshabilitado = pasado || ocupada(iso);
+      } else deshabilitado = pasado || ocupada(iso);
+      if (entrada && salida && iso > entrada && iso < salida) rango = true;
+      if (iso === entrada || iso === salida) marcado = true;
+      const etq = `${d} de ${MESES[m].toLowerCase()}${pasado ? ', pasado' : ocupada(iso) && !(entrada && !salida && iso > entrada) ? ', noche ocupada' : ''}${iso === entrada ? ', entrada' : iso === salida ? ', salida' : ''}`;
+      celdas += `<td><button type="button" class="dia ${rango ? 'rango' : ''} ${pasado ? 'pasado' : ''}" data-d="${iso}" data-t="${t}" aria-pressed="${marcado}" aria-label="${etq}" ${deshabilitado ? 'disabled' : ''}>${d}</button></td>`;
+    }
+    return `<div class="mes"><h3>${MESES[m]} <small style="font:500 1rem var(--f-texto)">${y}</small></h3><table><thead><tr>${['L', 'M', 'X', 'J', 'V', 'S', 'D'].map((x) => `<th scope="col">${x}</th>`).join('')}</tr></thead><tbody><tr>${celdas}</tr></tbody></table></div>`;
+  }
+  function pintarCalendario() {
+    const b2 = new Date(mesBase.getFullYear(), mesBase.getMonth() + 1, 1);
+    almanaque.innerHTML = pintarMes(mesBase) + pintarMes(b2);
+    ($('mes-ant') as HTMLButtonElement).disabled = mesBase <= new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+  }
+
+  function calcular() {
+    const a = aloj();
+    const ok = !!(entrada && salida);
+    const noches = ok ? nochesEntre(entrada, salida) : [];
+    const personas = Number(($('r-personas') as HTMLSelectElement).value);
+    const chk = (n: string) => (document.querySelector<HTMLInputElement>(`input[name="${n}"]`)!).checked;
+    $('c-aloj').textContent = a.nombre;
+    if (!ok) {
+      $('c-total').textContent = '0 €';
+      $('c-resumen').textContent = entrada ? 'Ahora elige el día de salida.' : 'Elige las noches para ver el precio.';
+      ['c-noches', 'c-alq', 'c-limp', 'c-ext', 'c-dep'].forEach((id) => ($(id).textContent = '–'));
+      return null;
+    }
+    const alq = noches.reduce((s, n) => s + Math.round(a.precio * TEMPORADA_FACTOR[temporadaDe(deISO(n))]), 0);
+    const limp = D.limpieza[a.id] ?? 0;
+    const e = D.extras;
+    const ext = (chk('lena') ? e.lena.precio * noches.length : 0) + (chk('desayuno') ? e.desayuno.precio * personas * noches.length : 0) + (chk('cena') ? e.cena.precio * personas : 0) + (chk('mascota') ? e.mascota.precio : 0);
+    const total = alq + limp + ext;
+    $('c-total').textContent = eur(total);
+    $('c-resumen').textContent = `${new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'short' }).format(deISO(entrada))} al ${new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'short' }).format(deISO(salida))}`;
+    $('c-noches').textContent = String(noches.length);
+    $('c-alq').textContent = eur(alq);
+    $('c-limp').textContent = eur(limp);
+    $('c-ext').textContent = ext ? eur(ext) : 'Ninguno';
+    $('c-dep').textContent = eur(Math.round(total * 0.3));
+    return { total, noches: noches.length, min: minNoches(entrada, salida) };
+  }
+
+  function ayuda() {
+    const el = $('ayuda-noches');
+    if (!entrada) el.textContent = 'Elige el día de entrada.';
+    else if (!salida) el.textContent = `Entrada el ${new Intl.DateTimeFormat('es-ES', { weekday: 'long', day: 'numeric', month: 'long' }).format(deISO(entrada))}. Ahora elige el día de salida.`;
+    else {
+      const n = nochesEntre(entrada, salida).length, min = minNoches(entrada, salida);
+      el.textContent = n < min ? `Son ${n} noche${n === 1 ? '' : 's'}: el mínimo para esas fechas es ${min}.` : `${n} noches.`;
+    }
+  }
+
+  function personas() {
+    const sel = $('r-personas') as HTMLSelectElement; const act = Number(sel.value) || 2;
+    const max = aloj().personas;
+    sel.innerHTML = Array.from({ length: max }, (_, i) => `<option value="${i + 1}">${i + 1} ${i === 0 ? 'persona' : 'personas'}</option>`).join('');
+    sel.value = String(Math.min(act, max));
+    const sinMascota = aloj().id === 'la-cabana';
+    const m = document.querySelector<HTMLInputElement>('input[name="mascota"]')!;
+    m.disabled = sinMascota; if (sinMascota) m.checked = false;
+  }
+
+  function todo() { pintarCalendario(); ayuda(); const r = calcular(); (window as unknown as { _res: unknown })._res = r; }
+
+  almanaque.addEventListener('click', (e) => {
+    const b = (e.target as HTMLElement).closest<HTMLButtonElement>('.dia');
+    if (!b || b.disabled) return;
+    const iso = b.dataset.d!;
+    if (!entrada || (entrada && salida)) { entrada = iso; salida = ''; }
+    else if (iso <= entrada) { entrada = iso; }
+    else { salida = iso; }
+    todo();
+    document.querySelector<HTMLButtonElement>(`.dia[data-d="${iso}"]`)?.focus();
+  });
+  $('mes-ant').addEventListener('click', () => { mesBase = new Date(mesBase.getFullYear(), mesBase.getMonth() - 1, 1); todo(); });
+  $('mes-sig').addEventListener('click', () => { mesBase = new Date(mesBase.getFullYear(), mesBase.getMonth() + 1, 1); todo(); });
+  radios().forEach((r) => r.addEventListener('change', () => { entrada = ''; salida = ''; personas(); todo(); }));
+  document.querySelectorAll('#r-personas, .extras input').forEach((el) => el.addEventListener('change', todo));
+
+  const q = new URLSearchParams(location.search).get('alojamiento');
+  if (q) { const r = radios().find((x) => x.value === q); if (r) r.checked = true; }
+  personas(); todo();
+
+  // Al enviar: comprobar que hay noches válidas y completar los campos ocultos
+  const form = document.getElementById('form-reserva') as HTMLFormElement;
+  form.addEventListener('submit', (e) => {
+    const r = calcular();
+    const err = $('error-reserva');
+    if (!r) { e.stopImmediatePropagation(); e.preventDefault(); err.textContent = 'Elige primero las noches en el calendario.'; document.getElementById('h-noches')!.scrollIntoView({ behavior: 'smooth' }); return; }
+    if (r.noches < r.min) { e.stopImmediatePropagation(); e.preventDefault(); err.textContent = `El mínimo para esas fechas es de ${r.min} noches.`; return; }
+    err.textContent = '';
+    ($('h-aloj') as HTMLInputElement).value = aloj().id; ($('h-in') as HTMLInputElement).value = entrada; ($('h-out') as HTMLInputElement).value = salida; ($('h-total') as HTMLInputElement).value = String(r.total);
+  }, true);
+</script>

@@ -1,0 +1,51 @@
+---
+// «El cielo de esta noche»: fase de la luna calculada en el navegador, y cuándo es la próxima noche oscura.
+---
+
+<div class="cielo" id="cielo">
+  <svg class="luna" id="luna" viewBox="-60 -60 120 120" role="img" aria-label="Fase de la luna de esta noche">
+    <circle r="50" fill="#0e1626" stroke="#6b7a94" stroke-width="1" />
+    <path id="luna-luz" d="" fill="#f1ecd8" />
+  </svg>
+  <div>
+    <h2 id="cielo-titulo">El cielo de esta noche</h2>
+    <p class="dato" id="cielo-dato" aria-live="polite">Calculando…</p>
+    <p id="cielo-texto"></p>
+  </div>
+</div>
+
+<script>
+  const SINODICO = 29.530588853;
+  const REF = Date.UTC(2000, 0, 6, 18, 14); // una luna nueva conocida
+  const fase = (t: number) => (((t - REF) / 864e5 / SINODICO) % 1 + 1) % 1;
+  const ilum = (p: number) => (1 - Math.cos(2 * Math.PI * p)) / 2;
+  function dibujar(p: number) {
+    const r = 50, mitad = p > 0.5;
+    const q = mitad ? 1 - p : p;
+    const k = Math.cos(2 * Math.PI * q);
+    const rx = Math.abs(k) * r;
+    const sweep2 = k > 0 ? 0 : 1;
+    const d = `M0 ${-r} A${r} ${r} 0 0 1 0 ${r} A${rx.toFixed(2)} ${r} 0 0 ${sweep2} 0 ${-r}Z`;
+    const el = document.getElementById('luna-luz')!;
+    el.setAttribute('d', d);
+    el.setAttribute('transform', mitad ? 'scale(-1 1)' : '');
+  }
+  const hoy = Date.now();
+  const p = fase(hoy), i = ilum(p);
+  dibujar(p);
+  const pct = Math.round(i * 100);
+  let nombre = 'Luna nueva';
+  if (pct > 3) nombre = p < 0.5 ? (pct < 45 ? 'Luna creciente' : pct < 97 ? 'Cuarto creciente a llena' : 'Luna llena') : (pct < 45 ? 'Luna menguante' : pct < 97 ? 'Llena a cuarto menguante' : 'Luna llena');
+  document.getElementById('cielo-dato')!.textContent = `${nombre} · ${pct} % iluminada`;
+  const calidad = pct < 15 ? 'Noche oscura: el cielo está en su mejor momento para ver la Vía Láctea y las estrellas más débiles.' : pct < 55 ? 'Buena noche para mirar el cielo, sobre todo antes de que salga la luna o después de que se ponga.' : 'La luna brilla mucho y se ven menos estrellas, pero el paisaje se ilumina y se pasea sin linterna.';
+  let proxima = '';
+  if (pct >= 15) {
+    for (let d = 1; d <= 30; d++) {
+      if (ilum(fase(hoy + d * 864e5)) < 0.1) {
+        proxima = ` La próxima noche oscura es el ${new Intl.DateTimeFormat('es-ES', { weekday: 'long', day: 'numeric', month: 'long' }).format(new Date(hoy + d * 864e5))}.`;
+        break;
+      }
+    }
+  }
+  document.getElementById('cielo-texto')!.textContent = calidad + proxima;
+</script>

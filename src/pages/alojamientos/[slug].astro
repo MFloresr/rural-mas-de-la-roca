@@ -1,0 +1,40 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import { getAlojamientos } from '../../lib/contenido';
+import { sitio } from '../../lib/sitio';
+import { euros } from '../../lib/util';
+
+export async function getStaticPaths() {
+  const a = await getAlojamientos();
+  return a.map((x) => ({ params: { slug: x.id }, props: { x } }));
+}
+const { x } = Astro.props;
+const d = x.data;
+const jsonld = { '@context': 'https://schema.org', '@type': 'Accommodation', name: d.nombre, description: d.resumen, numberOfRooms: d.habitaciones, occupancy: { '@type': 'QuantitativeValue', maxValue: d.personas } };
+---
+
+<Base titulo={`${d.nombre}, ${d.tipo.toLowerCase()}`} descripcion={d.resumen} jsonld={jsonld}>
+  <div class="contenedor">
+    <nav class="migas" aria-label="Migas de pan"><a href="/">Inicio</a> / <a href="/alojamientos/">Alojamientos</a> / <span aria-current="page">{d.nombre}</span></nav>
+    <header class="cabecera-pagina" style="padding-top:20px">
+      <p class="tipo" style="font:600 0.8rem var(--f-texto);letter-spacing:.18em;text-transform:uppercase;margin:0 0 10px">{d.tipo}</p>
+      <h1>{d.nombre}</h1>
+      <p>{d.resumen}</p>
+    </header>
+    <figure class="foto foto--ancha" style="margin-top:18px"><Image src={d.foto} alt={d.fotoAlt} widths={[700, 1100, 1600]} sizes="(min-width: 1240px) 1130px, 100vw" loading="eager" /></figure>
+    <div class="editorial seccion" style="padding-top:48px">
+      <div>
+        <ul class="datos-lista"><li><b>{d.personas}</b>personas</li><li><b>{d.habitaciones}</b>{d.habitaciones === 1 ? 'habitación' : 'habitaciones'}</li><li><b>{d.banos}</b>{d.banos === 1 ? 'baño' : 'baños'}</li><li><b>{d.metros}</b>m²</li></ul>
+        <p class="precio-noche num"><small>desde </small>{euros(d.precioNoche)} <small>la noche</small></p>
+        <p class="gris" style="font-size:0.95rem">Entrada {sitio.entrada}; salida {sitio.salida}. Limpieza final: {euros(sitio.limpieza[x.id] ?? 0)}.</p>
+        <p><a class="btn" href={`/reservar/?alojamiento=${x.id}`}>Ver noches libres</a></p>
+      </div>
+      <div>
+        {d.descripcion.map((p) => <p class="texto">{p}</p>)}
+        <h2 style="font-size:2.2rem;margin-top:1.2em">Incluye</h2>
+        <ul class="lista">{d.incluye.map((i) => <li>{i}</li>)}</ul>
+      </div>
+    </div>
+  </div>
+</Base>

@@ -1,0 +1,42 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Preguntas from '../components/Preguntas.astro';
+import morellana from '../assets/fotos/mas-morellana.jpg';
+import vinyes from '../assets/fotos/vinyes.jpg';
+---
+
+<Base titulo="El mas: historia y manera de cuidar el lugar" descripcion="La historia del mas, cómo cuidamos el lugar y qué esperamos de quien viene.">
+  <div class="contenedor cabecera-pagina">
+    <h1>El mas</h1>
+    <p>Una masía del siglo XVIII que durante dos generaciones fue una casa de campo y que hoy sigue haciendo lo mismo, pero con huéspedes.</p>
+  </div>
+  <section class="seccion" style="padding-top:30px">
+    <div class="contenedor editorial">
+      <figure class="foto foto--alta"><Image src={morellana} alt="Masía de piedra en la ladera de una montaña" widths={[500, 800, 1100]} sizes="(min-width: 960px) 40vw, 100vw" /><figcaption class="pie-foto">La ladera donde se asienta el mas.</figcaption></figure>
+      <div>
+        <h2>De casa de campo a casa abierta</h2>
+        <p>La familia compró el mas en 1962 y lo usó para las vendimias, las comidas de domingo y las navidades. Cuando los hijos se fueron, empezamos a recibir gente poco a poco: primero amigos, luego los amigos de los amigos.</p>
+        <p>Hoy mantenemos tres alojamientos y unas pocas hectáreas de viña que trabaja una familia vecina. No hay recepción, no hay piscina de cemento y el horario lo marca el sol.</p>
+        <h2 style="margin-top:1.2em">Cómo cuidamos el lugar</h2>
+        <ul class="lista">
+          <li>La calefacción funciona con leña de la propia finca y estufas de pellets.</li>
+          <li>El agua caliente es solar casi todo el año.</li>
+          <li>Apagamos las luces exteriores por la noche para proteger el cielo.</li>
+          <li>Compramos pan, aceite, vino y verduras a productores a menos de diez kilómetros.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  <section class="seccion seccion--blanca">
+    <div class="contenedor editorial editorial--inversa">
+      <figure class="foto foto--ancha"><Image src={vinyes} alt="Viña joven con tutores en tierra rojiza y cipreses al fondo" widths={[500, 900, 1300]} sizes="(min-width: 960px) 55vw, 100vw" /></figure>
+      <div>
+        <h2>Lo que te pedimos</h2>
+        <p>Venir sin prisa. Bajar la voz por la noche. No dejar nada en el campo, ni siquiera una colilla: el monte es seco. Y, si puedes, dejar el móvil un rato en la mesilla.</p>
+        <p class="gris">Algunas normas son de seguridad: no se pueden hacer fuegos fuera de la chimenea y la barbacoa solo se usa en la zona indicada.</p>
+      </div>
+    </div>
+  </section>
+  <section class="seccion"><div class="contenedor"><Preguntas tema="mas" titulo="Sobre el mas" /></div></section>
+</Base>

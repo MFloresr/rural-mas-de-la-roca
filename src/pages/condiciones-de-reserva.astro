@@ -1,0 +1,23 @@
+---
+import Base from '../layouts/Base.astro';
+import { sitio } from '../lib/sitio';
+---
+
+<Base titulo="Condiciones de reserva" descripcion="Cómo funcionan las citas: confirmación, cambios, cancelaciones y retrasos." noindex>
+  <div class="contenedor cabecera-pagina"><h1>Condiciones de reserva</h1></div>
+  <section class="seccion legal" style="padding-top:8px">
+    <div class="contenedor">
+      <p class="aviso aviso--demo" style="max-width:72ch">Plantilla de ejemplo. El cliente fija sus propias normas y su asesor las revisa antes de publicar.</p>
+      <h2>Cómo se reserva</h2>
+      <p>Al enviar la solicitud nos pides las noches elegidas. La reserva queda confirmada cuando te respondemos y recibimos el depósito del 30 %. Hasta entonces, las noches pueden estar ocupadas.</p>
+      <h2>Pago</h2>
+      <p>El depósito del 30 % se paga al confirmar y el resto, a la llegada o hasta siete días antes. [El cliente fija sus condiciones de pago.]</p>
+      <h2>Cancelaciones</h2>
+      <p>Hasta {sitio.cancelacionDias} días antes de la entrada, te devolvemos lo pagado. Después, nos quedamos con el depósito. [El cliente decide esta política.]</p>
+      <h2>Entrada y salida</h2>
+      <p>Entrada de {sitio.entrada} y salida {sitio.salida}. Si vas a llegar más tarde, avísanos.</p>
+      <h2>Normas de la casa</h2>
+      <p>Respeto al descanso de los demás, sin fiestas, sin fuegos fuera de la chimenea y con las mascotas solo donde se admiten. Pedimos que se cuide el entorno: el monte es seco.</p>
+      </div>
+  </section>
+</Base>

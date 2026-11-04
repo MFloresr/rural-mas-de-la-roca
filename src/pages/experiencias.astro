@@ -1,0 +1,26 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import { getExperiencias } from '../lib/contenido';
+
+const experiencias = await getExperiencias();
+---
+
+<Base titulo="Experiencias" descripcion="Noche de estrellas, vendimia, rutas por caminos antiguos y cocina de leña, con guías locales.">
+  <div class="contenedor cabecera-pagina">
+    <h1>Para hacer, si apetece</h1>
+    <p>Nada es obligatorio. Se reserva con la estancia o al llegar, según la plaza.</p>
+  </div>
+  <section class="seccion" style="padding-top:30px">
+    <div class="contenedor lista-exp">
+      {experiencias.map((e) => (
+        <article class="exp">
+          <div><h2 style="font-size:2.4rem;margin:0 0 6px">{e.data.nombre}</h2><p class="meta"><b>{e.data.duracion}</b> · {e.data.precio}</p><p class="meta"><b>Cuándo:</b> {e.data.cuando}</p></div>
+          <p style="max-width:46ch">{e.data.texto}</p>
+          <Image src={e.data.foto} alt={e.data.fotoAlt} widths={[400, 700]} sizes="(min-width: 900px) 25vw, 100vw" />
+        </article>
+      ))}
+    </div>
+    <div class="contenedor"><p class="letra-pequena" style="margin-top:20px">Experiencias y precios de ejemplo. Algunas dependen del tiempo y del número de personas.</p><p><a class="btn" href="/reservar/">Reservar estancia</a></p></div>
+  </section>
+</Base>

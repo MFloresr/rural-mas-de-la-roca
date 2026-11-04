@@ -1,0 +1,33 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import { getAlojamientos } from '../../lib/contenido';
+import { euros } from '../../lib/util';
+
+const alojamientos = await getAlojamientos();
+---
+
+<Base titulo="Alojamientos" descripcion="La Era, El Pajar y La Cabaña: tres alojamientos de piedra y madera en una masía del Priorat.">
+  <div class="contenedor cabecera-pagina">
+    <h1>Tres casas</h1>
+    <p>De dos a ocho personas. Todas con chimenea o estufa, ropa de cama y la mejor luz de la mañana.</p>
+  </div>
+  <section class="seccion" style="padding-top:30px">
+    <div class="contenedor alojamientos">
+      {alojamientos.map((a) => (
+        <article class="alojamiento">
+          <figure class="foto"><Image src={a.data.foto} alt={a.data.fotoAlt} widths={[500, 800, 1200]} sizes="(min-width: 900px) 55vw, 100vw" /></figure>
+          <div>
+            <p class="tipo">{a.data.tipo}</p>
+            <h2 style="font-size:clamp(2.6rem,5vw,4rem)">{a.data.nombre}</h2>
+            <p>{a.data.resumen}</p>
+            <ul class="datos-lista"><li><b>{a.data.personas}</b>personas</li><li><b>{a.data.habitaciones}</b>{a.data.habitaciones === 1 ? 'habitación' : 'habitaciones'}</li><li><b>{a.data.banos}</b>{a.data.banos === 1 ? 'baño' : 'baños'}</li><li><b>{a.data.metros}</b>m²</li></ul>
+            <p class="precio-noche num"><small>desde </small>{euros(a.data.precioNoche)} <small>la noche</small></p>
+            <p style="display:flex;gap:12px;flex-wrap:wrap"><a class="btn btn--peq" href={`/reservar/?alojamiento=${a.id}`}>Ver noches libres</a><a class="btn btn--peq btn--linea" href={`/alojamientos/${a.id}/`}>Conocerla</a></p>
+          </div>
+        </article>
+      ))}
+    </div>
+    <div class="contenedor"><p class="letra-pequena" style="margin-top:30px">Los precios son por noche en temporada baja; la media cuesta un 20 % más y la alta, un 50 % más. Las fotografías son de otros lugares y se sustituyen por las de las casas reales.</p></div>
+  </section>
+</Base>

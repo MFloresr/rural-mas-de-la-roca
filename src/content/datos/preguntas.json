@@ -1,0 +1,10 @@
+[
+  { "id": "q1", "tema": "reserva", "pregunta": "¿Cómo se reserva?", "respuesta": "Elige alojamiento y noches en el calendario, mira el precio y envía la solicitud. Te confirmamos disponibilidad por correo o teléfono en un día laborable y te pedimos un 30 % para confirmar la reserva." },
+  { "id": "q2", "tema": "reserva", "pregunta": "¿Cuál es el mínimo de noches?", "respuesta": "Dos noches, y tres en temporada alta (julio, agosto y Navidad). Fuera de esas fechas, si falta poco para llenar una semana, puedes consultarnos." },
+  { "id": "q3", "tema": "reserva", "pregunta": "¿Puedo cancelar?", "respuesta": "Hasta 14 días antes de la entrada, te devolvemos lo pagado. Después, nos quedamos con el depósito. [El cliente decide esta política.]" },
+  { "id": "q4", "tema": "estancia", "pregunta": "¿A qué hora se entra y se sale?", "respuesta": "La entrada es de 16:00 a 20:00 y la salida, antes de las 11:00. Si llegas más tarde, avísanos para dejarte las llaves." },
+  { "id": "q5", "tema": "estancia", "pregunta": "¿Se admiten mascotas?", "respuesta": "Sí, en La Era y El Pajar, con un suplemento de 15 € por estancia. Pedimos que no suban a las camas y que no se queden solas en la casa." },
+  { "id": "q6", "tema": "estancia", "pregunta": "¿Hay cobertura y wifi?", "respuesta": "La cobertura móvil es floja a propósito y hay wifi en La Era y El Pajar. La Cabaña no tiene wifi: es una cabaña para desconectar." },
+  { "id": "q7", "tema": "mas", "pregunta": "¿Cómo se llega sin coche?", "respuesta": "No es fácil: el pueblo tiene un autobús al día desde Reus y desde allí hay que subir en taxi. Recomendamos venir en coche. Si no puedes, escríbenos." },
+  { "id": "q8", "tema": "mas", "pregunta": "¿Se puede comer en el mas?", "respuesta": "Cocinamos cenas caseras por encargo (24 € por persona) y puedes pedir desayuno de pueblo (9 € por persona y día). No hay restaurante abierto al público." }
+]
